@@ -1,32 +1,30 @@
 function linegraph(svg, data, slow, colors, height, width, xscale, yscale, barmargin) {
 
-
         var bardataset = data//.reverse();
+        var barwidth = +svg.attr("width") - barmargin.left - barmargin.right,
+            barheight = +svg.attr("height") - barmargin.top - barmargin.bottom;
 
-         var barwidth = +svg.attr("width") - barmargin.left - barmargin.right,
-          barheight = +svg.attr("height") - barmargin.top - barmargin.bottom;
+        var barw = barwidth/50;//7;
 
-         var barw = barwidth/50;//7;
-
-         var g = svg.append("g")
+        var g = svg.append("g")
   						.attr("transform", "translate(" + barmargin.left + "," + barmargin.top + ")");
 
-          var dotsy = bardataset.map(function(x){
+        var dotsy = bardataset.map(function(x){
             return barheight - yscale(x);
-          });
+            });
 
 
-          var lineData = [{ "x": barmargin.left, "y": Number(dotsy[1])},  { "x": (1)*(width/3), "y": Number(dotsy[1])},
+        var lineData = [{ "x": barmargin.left, "y": Number(dotsy[1])},  { "x": (1)*(width/3), "y": Number(dotsy[1])},
                   { "x": (2)*(width/3), "y": Number(dotsy[0])},  { "x": width, "y": Number(dotsy[0])}];
 
           //console.log(lineData)
 
-          var lineFunction = d3.line()
+        var lineFunction = d3.line()
                           .x(function(d) { return d.x; })
                           .y(function(d) { return d.y; });
                           //.interpolate("linear");
 
-          var lineGraph = svg.append("path")
+        var lineGraph = svg.append("path")
                         .attr("d", lineFunction(lineData))
                         .attr("stroke", "black")
                         .attr("stroke-width", 1)
@@ -34,7 +32,7 @@ function linegraph(svg, data, slow, colors, height, width, xscale, yscale, barma
                         .classed("graph_path", true);;
 
 
-          var dots = svg.selectAll("circle")
+        var dots = svg.selectAll("circle")
                         .data(bardataset)
                         .enter()
                         .append("circle")
@@ -47,8 +45,8 @@ function linegraph(svg, data, slow, colors, height, width, xscale, yscale, barma
 
           //console.log(dotsy);
 
-            dots.attr("fill", function(d,i) { return colors[Math.abs(i-1)]})
-                .attr("stroke", "black");
+        dots.attr("fill", function(d,i) { return colors[Math.abs(i-1)]})
+            .attr("stroke", "black");
 
 
           var xaxispositions = function(x) {
@@ -133,3 +131,18 @@ function lineUpdate(svg, dataset, slow, colors, height, width, xscale ,yscale, b
 
 
 }//lineUpdate function definition
+
+function line_exit(svg, speed) {
+
+  //fade out line
+  var lineGraph = svg.selectAll("path.graph_path")
+                     .transition()
+                     .duration(speed)
+                     .attr("stroke", "000")
+  //zoom out circles - bigger then smaller?
+
+  var circle = svg.selectAll("circle")
+                  .transition()
+                  .duration(speed)
+                  .attr("r",0);
+}

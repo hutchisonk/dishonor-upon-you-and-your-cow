@@ -7,6 +7,14 @@ svg {
   border-radius: 2px;
 }
 
+h1 {
+  text-align: center;
+}
+
+a {
+  color:black;
+  text-decoration: none;
+}
 .arc text {
   font: 10px sans-serif;
   text-anchor: middle;
@@ -52,13 +60,19 @@ h4 {
 #youlabel {
   float:left;
   margin:auto;
+  color: #1aa5ff;
 }
 #yourcowlabel {
   float:right;
+  color: #ff741a;
 }
 
 .axislabel {
   border:1px solid green;
   font-size: 10px;
   color:red;
+}
+
+text{
+  border:5px solid green;
 }

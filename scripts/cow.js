@@ -10,7 +10,6 @@ $(document).ready(function() {
 		extendedDS.push([you ? "you" : "your cow", Math.floor(Math.random()*101) - 50])
 	}
 
-
 	//$( function() {
 	$( "#slider" ).slider({
 		min: 1,
@@ -31,8 +30,9 @@ $(document).ready(function() {
 	//
 });//slider
 		//});
-
+//defining some kind-of universal variables?
 		var slow = 1000;
+    var fast = 250;
 		var colors = ["#1aa5ff","#ff741a", "#ff1aa5", "#1aff74"]
 		var youcow = {"you":"#009aff",
 									"your cow":"#ff6500"}
@@ -141,11 +141,33 @@ var callGraph = function(id) {
 
 
 $("button.graphstyle").click(function(){
-	$("svg").empty();
-  var id = $(this).attr("id");
-	//console.log(id)
-  console.log(dataset);
-	callGraph(id);
+var id = $(this).attr("id");
+
+  switch(whichgraph) {
+    case "circles":
+        circles_exit(svg, fast);
+        break;
+    case "piechart":
+        pie_exit(svg, fast);
+        break;
+		case "bargraph":
+				bar_exit(svg, fast, barmargin, yscale);
+        break;
+    case "linegraph":
+        line_exit(svg, fast);
+        break;
+    default:
+        console.log("no function matches that id");
+	}//switch
+
+  setTimeout(function() {
+    $("svg").empty();
+
+    //console.log(id)
+    console.log(dataset);
+    callGraph(id);
+  }, fast);
+
 
 })//graphstyle click function
 callGraph("linegraph")

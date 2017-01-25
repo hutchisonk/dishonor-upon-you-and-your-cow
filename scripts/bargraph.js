@@ -21,8 +21,12 @@ function bargraph(svg, data, slow, colors, height, width, xscale ,yscale, barmar
           //bar attributes
           bars.attr("class", "bar")
               .attr("x", function(d,i) {/*console.log("positions are "+xaxispositions(Math.abs(i-1)));*/ return xaxispositions(Math.abs(i-1)); })
-              .attr("y", function(d) { return barheight - yscale(d); })
               .attr("width", barw)
+              .attr("y", function(d) { return (barheight - yscale(d)/2); })
+              .attr("height", function(d) { return 0; })
+              .transition()
+              .duration(slow)
+              .attr("y", function(d) { return barheight - yscale(d); })
               .attr("height", function(d) { return yscale(d); })
               .attr("fill", function(d,i) { return colors[Math.abs(i-1)] })
               .attr("stroke", "black")
@@ -92,3 +96,16 @@ function barUpdate(svg, data, slow, colors, height, width, xscale ,yscale, barma
                      .attr("height", function(d) { return yscale(d); });
 
 }//barupdate function definition
+
+
+function bar_exit(svg, speed, barmargin, yscale) {
+
+  var barwidth = +svg.attr("width") - barmargin.left - barmargin.right,
+  barheight = +svg.attr("height") - barmargin.top - barmargin.bottom;
+
+  var bars = svg.selectAll(".bar")
+              .transition()
+              .duration(speed)
+              .attr("y", function(d) { return (barheight - yscale(d)/2); })
+              .attr("height", function(d) { return 0; });
+}

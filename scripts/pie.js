@@ -42,6 +42,9 @@ var piechart = function(svg, dataset, speed, colors, height, width) {
           .data(pie(dataset))
           .enter()
           .append('path')
+          .attr('d', dot)
+          .transition()
+          .duration(speed)
           .attr('d', arc)
           .attr("stroke", "black")
           .attr("stroke-width", 1)
@@ -118,3 +121,21 @@ var updatePie = function(svg, dataset, slow, colors, height, width) {
       path.transition().duration(slow).attrTween("d", arcTween);
           //.attr("d", arc);
 }//updatePie function
+
+function pie_exit(svg, speed) {
+
+  var dot = d3.arc()
+              .outerRadius(1)
+              .innerRadius(1);
+
+    var path = svg.selectAll('path')
+                  .transition()
+                  .duration(speed)
+                  .attr("d", dot);
+    //
+    // var circle = svg.selectAll("circle")
+    //                 .transition()
+    //                 .duration(speed)
+    //                 .attr("r",0);
+
+}
