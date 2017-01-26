@@ -1,10 +1,11 @@
-function bargraph(svg, data, slow, colors, height, width, xscale ,yscale, barmargin) {
+function bargraph(svg, data, slow, colors, height, width, xscale ,yscale, barmargin, barw, xpositions) {
         var bardataset = data//.reverse();
+        console.log(barw);
 
-         var barwidth = +svg.attr("width") - barmargin.left - barmargin.right,
-          barheight = +svg.attr("height") - barmargin.top - barmargin.bottom;
-
-         var barw = barwidth/7;
+        // var barwidth = +svg.attr("width") - barmargin.left - barmargin.right,
+        //  barheight = +svg.attr("height") - barmargin.top - barmargin.bottom;
+        //
+        // var barw = barwidth/7;
 
          var g = svg.append("g")
   						.attr("transform", "translate(" + barmargin.left + "," + barmargin.top + ")");
@@ -14,19 +15,19 @@ function bargraph(svg, data, slow, colors, height, width, xscale ,yscale, barmar
     							.enter()
                   .append("rect");
 
-          var xaxispositions = function(x) {
-            return (barwidth/4)-(barw/2)+(x*(barwidth/(3+(-x))));
-          }
+          // var xaxispositions = function(x) {
+          //   return (barwidth/4)-(barw/2)+(x*(barwidth/(3+(-x))));
+          // }
 
           //bar attributes
           bars.attr("class", "bar")
-              .attr("x", function(d,i) {/*console.log("positions are "+xaxispositions(Math.abs(i-1)));*/ return xaxispositions(Math.abs(i-1)); })
+              .attr("x", function(d,i) {console.log("positions are "+xpositions[Math.abs(i-1)]); return xpositions[Math.abs(i-1)] - barw/2 })
               .attr("width", barw)
-              .attr("y", function(d) { return (barheight - yscale(d)/2); })
+              .attr("y", function(d) { return ((svg.attr("height") - barmargin.top - barmargin.bottom) - yscale(d)/2); })
               .attr("height", function(d) { return 0; })
               .transition()
               .duration(slow)
-              .attr("y", function(d) { return barheight - yscale(d); })
+              .attr("y", function(d) { return (svg.attr("height") - barmargin.top - barmargin.bottom) - yscale(d); })
               .attr("height", function(d) { return yscale(d); })
               .attr("fill", function(d,i) { return colors[Math.abs(i-1)] })
               .attr("stroke", "black")
@@ -36,14 +37,14 @@ function bargraph(svg, data, slow, colors, height, width, xscale ,yscale, barmar
           //x axis
           g.append("g")
                 .attr("class", "axis axis--x")
-                .attr("transform", "translate(0," + barheight + ")")
+                .attr("transform", "translate(0," + (svg.attr("height") - barmargin.top - barmargin.bottom) + ")")
                 .call(d3.axisBottom(xscale)
                         .ticks(2)
                         .tickFormat(function (d,i) { return ["you", "your cow"][Math.abs(i-1)]; }));
 
-            var tick = g.selectAll(".tick");
-            tick.attr("transform",function(d,i){
-                  return "translate(" + (parseInt(xaxispositions(Math.abs(i-1))) + parseInt(barw/2))+ " ,"+0+")"})
+          var tick = g.selectAll(".tick");
+          tick.attr("transform",function(d,i){
+                return "translate(" + (xpositions[Math.abs(i-1)])+ " ,"+0+")"});
                     //.tickValues(function(d,i) {console.log("positions are "+xaxispositions(Math.abs(i-1))); return xaxispositions(Math.abs(i-1)) }));
                     //.attr("padding", "20px"));
                     //.tickValues(function(d,i) {console.log(xaxispositions(i)); return xaxispositions(i); }));
@@ -78,7 +79,8 @@ function bargraph(svg, data, slow, colors, height, width, xscale ,yscale, barmar
 
 }//bargraph function definition
 
-function barUpdate(svg, data, slow, colors, height, width, xscale ,yscale, barmargin) {
+function barUpdate(svg, data, slow, colors, height, width, xscale ,yscale, barmargin, barw,xpositions) {
+
           console.log("h is "+height);
           var barwidth = +svg.attr("width") - barmargin.left - barmargin.right,
           barheight = +svg.attr("height") - barmargin.top - barmargin.bottom;

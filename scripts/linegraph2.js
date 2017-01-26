@@ -1,21 +1,24 @@
-function linegraph(svg, data, slow, colors, height, width, xscale, yscale, barmargin) {
+function linegraph(svg, data, slow, colors, height, width, xscale, yscale,barmargin, barw, xpositions) {
 
         var bardataset = data//.reverse();
         var barwidth = +svg.attr("width") - barmargin.left - barmargin.right,
             barheight = +svg.attr("height") - barmargin.top - barmargin.bottom;
 
-        var barw = barwidth/50;//7;
+        //var barw = barwidth/50;//7;
 
         var g = svg.append("g")
   						.attr("transform", "translate(" + barmargin.left + "," + barmargin.top + ")");
+
+        var xaxispositions = function(x) {
+          return (barwidth/4)-(barw/2)+(x*(barwidth/(3+(-x))));
+        }
 
         var dotsy = bardataset.map(function(x){
             return barheight - yscale(x);
             });
 
-
-        var lineData = [{ "x": barmargin.left, "y": Number(dotsy[1])},  { "x": (1)*(width/3), "y": Number(dotsy[1])},
-                  { "x": (2)*(width/3), "y": Number(dotsy[0])},  { "x": width, "y": Number(dotsy[0])}];
+        var lineData = [{ "x": barmargin.left, "y": Number(dotsy[1])},  { "x": parseInt(xpositions[0]) + parseInt(barw), "y": Number(dotsy[1])},
+                  { "x": parseInt(xpositions[1]) + parseInt(barw) , "y": Number(dotsy[0])},  { "x": width, "y": Number(dotsy[0])}];
 
           //console.log(lineData)
 
@@ -36,7 +39,7 @@ function linegraph(svg, data, slow, colors, height, width, xscale, yscale, barma
                         .data(bardataset)
                         .enter()
                         .append("circle")
-                        .attr("cx", function(d,i) {return ((Math.abs(i-1)+1)*(width/3))})
+                        .attr("cx", function(d,i) {console.log("positions are "+xpositions[Math.abs(i-1)]); return xpositions[Math.abs(i-1)] + barw })
                         .attr("cy", function(d) { dotsy.push(Number(barheight - yscale(d))); return barheight - yscale(d); })
                         .attr("r",0)
                         .transition()
@@ -49,23 +52,21 @@ function linegraph(svg, data, slow, colors, height, width, xscale, yscale, barma
             .attr("stroke", "black");
 
 
-          var xaxispositions = function(x) {
-            return (barwidth/4)-(barw/2)+(x*(barwidth/(3+(-x))));
-          }
 
-          //x axis
-          g.append("g")
-                .attr("class", "axis axis--x")
-                .attr("transform", "translate(0," + barheight + ")")
-                .call(d3.axisBottom(xscale)
-                        .ticks(2)
-                        .tickFormat(function (d,i) { return ["you", "your cow"][Math.abs(i-1)]; }));
+            g.append("g")
+                  .attr("class", "axis axis--x")
+                  .attr("transform", "translate(0," + (svg.attr("height") - barmargin.top - barmargin.bottom) + ")")
+                  .call(d3.axisBottom(xscale)
+                          .ticks(2)
+                          .tickFormat(function (d,i) { return ["you", "your cow"][Math.abs(i-1)]; }));
 
             var tick = g.selectAll(".tick");
             tick.attr("transform",function(d,i){
-                  return "translate(" + (parseInt(xaxispositions(Math.abs(i-1))) + parseInt(barw/2))+ " ,"+0+")"});
-
-          //y axis
+                  return "translate(" + (xpositions[Math.abs(i-1)])+ " ,"+0+")"});
+                      //.tickValues(function(d,i) {console.log("positions are "+xaxispositions(Math.abs(i-1))); return xaxispositions(Math.abs(i-1)) }));
+                      //.attr("padding", "20px"));
+                      //.tickValues(function(d,i) {console.log(xaxispositions(i)); return xaxispositions(i); }));
+        //y axis
           g.append("g")
                 .attr("class", "axis axis--y")
                 .call(d3.axisLeft(yscale)
@@ -95,7 +96,7 @@ function linegraph(svg, data, slow, colors, height, width, xscale, yscale, barma
 
 
 
-function lineUpdate(svg, dataset, slow, colors, height, width, xscale ,yscale, barmargin) {
+function lineUpdate(svg, dataset, slow, colors, height, width, xscale ,yscale, barmargin,barw,xpositions) {
 
           var barwidth = +svg.attr("width") - barmargin.left - barmargin.right,
           barheight = +svg.attr("height") - barmargin.top - barmargin.bottom;
@@ -105,17 +106,15 @@ function lineUpdate(svg, dataset, slow, colors, height, width, xscale ,yscale, b
 
 
              svg.selectAll("circle").data(bardataset).transition()
-     	    	.duration(500)
-     	        .attr("cy", function(d) { dotsy.push(barheight - yscale(d)); return barheight - yscale(d); })
+     	    	    .duration(500)
+     	          .attr("cy", function(d) { dotsy.push(barheight - yscale(d)); return barheight - yscale(d); })
 
               var dotsy = bardataset.map(function(x){
                 return barheight - yscale(x);
               });
 
-              var lineData = [{ "x": barmargin.left, "y": Number(dotsy[1])},  { "x": (1)*(width/3), "y": Number(dotsy[1])},
-                      { "x": (2)*(width/3), "y": Number(dotsy[0])},  { "x": width, "y": Number(dotsy[0])}];
-
-              //console.log(lineData)
+              var lineData = [{ "x": barmargin.left, "y": Number(dotsy[1])},  { "x": parseInt(xpositions[0]) + parseInt(barw), "y": Number(dotsy[1])},
+                        { "x": parseInt(xpositions[1]) + parseInt(barw) , "y": Number(dotsy[0])},  { "x": width, "y": Number(dotsy[0])}];
 
               var lineFunction = d3.line()
                               .x(function(d) { return d.x; })

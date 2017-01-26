@@ -62,10 +62,18 @@ $(document).ready(function() {
 
 		var barsvg = d3.select("svg");
 
-		// var scale = d3.scaleLinear()
-		// 		.domain([0, 100])
-		// 		.range([0, height]);
 
+    var barwidth = +svg.attr("width") - barmargin.left - barmargin.right,
+     barheight = +svg.attr("height") - barmargin.top - barmargin.bottom;
+
+    var barw = barwidth/7;
+
+    var xaxispositions = function(x) {
+      return (barwidth/4)-(barw/2)+(x*(barwidth/(3+(-x))));
+    }
+    xpositions = [];
+    xpositions.push(xaxispositions(0))
+    xpositions.push(xaxispositions(1))
 
 
 var updateGraph = function(which) {
@@ -92,7 +100,7 @@ var updateGraph = function(which) {
         break;
 		case "bargraph":
 				whichgraph = "bargraph";
-				barUpdate(svg, dataset, slow, colors, height, width, xscale ,yscale, barmargin);
+				barUpdate(svg, dataset, slow, colors, height, width, xscale ,yscale, barmargin, barw, xpositions);
         break;
     case "line":
 	    	whichgraph = "line";
@@ -100,7 +108,7 @@ var updateGraph = function(which) {
         break;
     case "linegraph":
 				whichgraph = "linegraph";
-				lineUpdate(svg, dataset, slow, colors, height, width, xscale ,yscale, barmargin);
+				lineUpdate(svg, dataset, slow, colors, height, width, xscale ,yscale, barmargin,barw,xpositions);
         break;
 		case "":
 	    	whichgraph = "none";
@@ -128,11 +136,11 @@ var callGraph = function(id) {
         break;
 		case "bargraph":
 				whichgraph = "bargraph";
-				bargraph(svg, dataset, slow, colors, height, width, xscale ,yscale, barmargin);
+				bargraph(svg, dataset, slow, colors, height, width, xscale ,yscale, barmargin,barw,xpositions);
         break;
     case "linegraph":
 	    	whichgraph = "linegraph";
-        linegraph(svg, dataset, slow, colors, height, width, xscale, yscale, barmargin);
+        linegraph(svg, dataset, slow, colors, height, width, xscale, yscale, barmargin,barw,xpositions);
         break;
     default:
         console.log("no function matches that id");
