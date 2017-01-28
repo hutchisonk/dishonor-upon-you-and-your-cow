@@ -20,23 +20,19 @@ $(document).ready(function() {
 			//console.log(ui.value);
 			//UPDATE THE DATASET
 			dataset = [100-ui.value, ui.value];
-			//console.log(dataset);
-			//callGraph(whichgraph, dataset);
-			//$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+
 		}),
 		change: function (event, ui){
 				updateGraph(whichgraph);
 		}//slide
 	//
 });//slider
-		//});
 //defining some kind-of universal variables?
 		var slow = 1000;
     var fast = 250;
 		var colors = ["#1aa5ff","#ff741a", "#ff1aa5", "#1aff74"]
 		var youcow = {"you":"#009aff",
 									"your cow":"#ff6500"}
-
 
 		var height = $('svg').attr('height');
 		var width = $('svg').attr('width');
@@ -78,18 +74,10 @@ $(document).ready(function() {
 
 var updateGraph = function(which) {
 
-  // if (whichgraph == "bargraph") {
-  //
-  //     dataset = dataset.reverse();
-  // }
   console.log(dataset)
 	switch(which) {
     case "circles":
 				whichgraph = "circles";
-        // if (whichgraph == "bargraph") {
-        //   var rects = svg.selectAll("rect");
-        //
-        // }
 				svg.selectAll("circle").data(dataset).transition()
 	    	.duration(500)
 	        .attr("r",function(d) {return rscale(d)});
@@ -170,8 +158,6 @@ var id = $(this).attr("id");
 
   setTimeout(function() {
     $("svg").empty();
-
-    //console.log(id)
     console.log(dataset);
     callGraph(id);
   }, fast);
